@@ -5,8 +5,8 @@
     }
     #outer {
         position: relative;
-        height: 92px;
-        min-width: 302px;
+        height: 96px;
+        min-width: 304px;
         margin: 50px;
     }
     #top {
@@ -22,9 +22,9 @@
     #expander {
         position: absolute;
         bottom: 0;
-        left: 160px;
-        width: calc(100% - 176px);
-        height: 42px;
+        left: 162px;
+        width: calc(100% - 182px);
+        height: 46px;
     }
 </style>
 <script>
@@ -66,7 +66,7 @@
 
         startingWidth = window.innerWidth;
         startingHeight = window.innerHeight;
-        margin = (startingWidth - 302) / 2;
+        margin = (startingWidth - 304) / 2;
 
         outer.style.marginLeft = margin;
         outer.style.marginRight = margin;
@@ -95,23 +95,11 @@
 
         document.body.addEventListener('click', audioSetup);
 
-        document.body.addEventListener('keydown', function () {
-            /*if (!gainNode) return;
-
-            gainNode.gain.value = .5;*/
-        });
-
-        document.body.addEventListener('keyup', function () {
-            /*if (!gainNode) return;
-
-            gainNode.gain.value = 0;*/
-        });
-
         window.addEventListener('resize', onResize);
     });
 </script>
 <div id="outer">
-    <img id="expander" src="expander.gif" />
-    <img id="slide" src="slide.gif" />
-    <img id="top" src="top.gif" />
+    <img id="top" src="top.png" />
+    <img id="expander" src="expander.png" />
+    <img id="slide" src="slide.png" />
 </div>
