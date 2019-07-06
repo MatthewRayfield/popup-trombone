@@ -2,6 +2,8 @@
     body {
         background: url('bg.gif');
         background-size: 100px;
+        overflow: hidden;
+        height: 100%;
     }
     #outer {
         position: relative;
@@ -26,6 +28,12 @@
         width: calc(100% - 182px);
         height: 46px;
     }
+    .note {
+        position: absolute;
+        top: 22px;
+        left: 203px;
+        z-index: -1;
+    }
 </style>
 <script>
     var audioCtx,
@@ -36,14 +44,19 @@
         startingWidth,
         startingHeight,
     
-        timeout;
+        timeout,
+
+        lastNoteTime = 0,
+        notes = [];
     
     function onResize(event) {
-        var x;
+        var width = window.innerWidth,
+            t = performance.now(),
+            x;
 
-        if (window.innerWidth < startingWidth) setStarting();
+        if (width < startingWidth) setStarting();
 
-        x = (window.innerWidth - startingWidth) / 50;
+        x = (width - startingWidth) / 50;
 
         if (!oscillatorNode) return;
 
@@ -53,7 +66,12 @@
         //gainOutNode.gain.setValueAtTime(gainOutNode.gain.value, audioCtx.currentTime);
         gainNode.gain.linearRampToValueAtTime(.5, audioCtx.currentTime + .1);
 
-        outer.style.transform = 'rotate('+((Math.random()-.5)/window.innerWidth*500)+'deg)';
+        outer.style.transform = 'rotate('+((Math.random()-.5)/width*1000)+'deg)';
+
+        if (t - lastNoteTime > 200) {
+            lastNoteTime = t;
+            addNote();
+        }
 
         clearTimeout(timeout);
         timeout = setTimeout(function () {
@@ -89,6 +107,43 @@
         gainNode.connect(audioCtx.destination);
     }
 
+    function addNote() {
+        var element = document.createElement('img'),
+            note = {
+                x: 203,
+                y: 22,
+                xv: Math.random()*5+5,
+                yv: Math.random()*4-2,
+                element: element
+            };
+
+        element.src = 'note.gif';
+        element.className = 'note';
+        outer.appendChild(element);
+
+        notes.push(note);
+    }
+
+    function moveNotes() {
+        var newNotes = [];
+
+        notes.forEach(function (note) {
+            note.yv -= .2;
+
+            note.x += note.xv;
+            note.y += note.yv;
+
+            if (note.y > -100) newNotes.push(note);
+
+            note.element.style.top = note.y;
+            note.element.style.left = note.x;
+        });
+
+        notes = newNotes;
+
+        setTimeout(moveNotes, 50);
+    }
+
     window.addEventListener('load', function () {
         outer = document.getElementById('outer');
         setStarting();
@@ -96,6 +151,8 @@
         document.body.addEventListener('click', audioSetup);
 
         window.addEventListener('resize', onResize);
+
+        moveNotes();
     });
 </script>
 <div id="outer">
