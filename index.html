@@ -1,0 +1,117 @@
+<style>
+    body {
+        background: url('bg.gif');
+        background-size: 100px;
+    }
+    #outer {
+        position: relative;
+        height: 92px;
+        min-width: 302px;
+        margin: 50px;
+    }
+    #top {
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+    #slide {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+    }
+    #expander {
+        position: absolute;
+        bottom: 0;
+        left: 160px;
+        width: calc(100% - 176px);
+        height: 42px;
+    }
+</style>
+<script>
+    var audioCtx,
+        oscillatorNode,
+        gainNode,
+    
+        outer,
+        startingWidth,
+        startingHeight,
+    
+        timeout;
+    
+    function onResize(event) {
+        var x;
+
+        if (window.innerWidth < startingWidth) setStarting();
+
+        x = (window.innerWidth - startingWidth) / 50;
+
+        if (!oscillatorNode) return;
+
+        oscillatorNode.detune.value = (1-x) * 100 - 2400;
+        gainNode.gain.value = .5;
+
+        //gainOutNode.gain.setValueAtTime(gainOutNode.gain.value, audioCtx.currentTime);
+        gainNode.gain.linearRampToValueAtTime(.5, audioCtx.currentTime + .1);
+
+        outer.style.transform = 'rotate('+((Math.random()-.5)/window.innerWidth*500)+'deg)';
+
+        clearTimeout(timeout);
+        timeout = setTimeout(function () {
+            gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + .1);
+        }, 200);
+    }
+
+    function setStarting() {
+        var margin;
+
+        startingWidth = window.innerWidth;
+        startingHeight = window.innerHeight;
+        margin = (startingWidth - 302) / 2;
+
+        outer.style.marginLeft = margin;
+        outer.style.marginRight = margin;
+    }
+
+    function audioSetup() {
+        if (audioCtx) return;
+
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        oscillatorNode = audioCtx.createOscillator();
+        oscillatorNode.type = 'sawtooth';
+        oscillatorNode.frequency.value = 440;
+        oscillatorNode.start(0);
+
+        gainNode = audioCtx.createGain();
+        gainNode.gain.value = 0;
+
+        oscillatorNode.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+    }
+
+    window.addEventListener('load', function () {
+        outer = document.getElementById('outer');
+        setStarting();
+
+        document.body.addEventListener('click', audioSetup);
+
+        document.body.addEventListener('keydown', function () {
+            /*if (!gainNode) return;
+
+            gainNode.gain.value = .5;*/
+        });
+
+        document.body.addEventListener('keyup', function () {
+            /*if (!gainNode) return;
+
+            gainNode.gain.value = 0;*/
+        });
+
+        window.addEventListener('resize', onResize);
+    });
+</script>
+<div id="outer">
+    <img id="expander" src="expander.gif" />
+    <img id="slide" src="slide.gif" />
+    <img id="top" src="top.gif" />
+</div>
