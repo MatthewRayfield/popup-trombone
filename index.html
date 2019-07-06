@@ -1,9 +1,11 @@
+<link href="https://fonts.googleapis.com/css?family=ABeeZee&display=swap" rel="stylesheet">
 <style>
     body {
         background: url('bg.gif');
         background-size: 100px;
         overflow: hidden;
         height: 100%;
+        font-family: 'ABeeZee', sans-serif;
     }
     #outer {
         position: relative;
@@ -25,7 +27,7 @@
         position: absolute;
         bottom: 0;
         left: 162px;
-        width: calc(100% - 182px);
+        width: calc(100% - 300px);
         height: 46px;
     }
     .note {
@@ -34,6 +36,24 @@
         left: 203px;
         z-index: -1;
     }
+    #scale {
+        position: absolute;
+        top: 150px;
+        left: 100px;
+        margin-left: 180px;
+        white-space: nowrap;
+        font-size: 0px;
+    }
+    #scale .mark {
+        font-size: 20px;
+        width: 43px;
+        padding-left: 5px;
+        border-left: 2px solid;
+        border-color: rgba(0,0,0,.5);
+        display: inline-block;
+        color: #3a3a3a;
+        text-shadow: -2px 2px rgba(0,0,0,.2);
+    }
 </style>
 <script>
     var audioCtx,
@@ -41,8 +61,9 @@
         gainNode,
     
         outer,
+        expander,
+        scale,
         startingWidth,
-        startingHeight,
     
         timeout,
 
@@ -52,21 +73,18 @@
     function onResize(event) {
         var width = window.innerWidth,
             t = performance.now(),
-            x;
+            x = (expander.offsetWidth-4) / 50;
 
-        if (width < startingWidth) setStarting();
-
-        x = (width - startingWidth) / 50;
+        if (width < startingWidth) setMargins();
 
         if (!oscillatorNode) return;
 
-        oscillatorNode.detune.value = (1-x) * 100 - 2400;
+        oscillatorNode.detune.value = (x * -100) - 1200;
         gainNode.gain.value = .5;
 
-        //gainOutNode.gain.setValueAtTime(gainOutNode.gain.value, audioCtx.currentTime);
         gainNode.gain.linearRampToValueAtTime(.5, audioCtx.currentTime + .1);
 
-        outer.style.transform = 'rotate('+((Math.random()-.5)/width*1000)+'deg)';
+        //outer.style.transform = 'rotate('+((Math.random()-.5)/width*500)+'deg)';
 
         if (t - lastNoteTime > 200) {
             lastNoteTime = t;
@@ -79,15 +97,16 @@
         }, 200);
     }
 
-    function setStarting() {
+    function setMargins() {
         var margin;
 
         startingWidth = window.innerWidth;
-        startingHeight = window.innerHeight;
         margin = (startingWidth - 304) / 2;
 
         outer.style.marginLeft = margin;
         outer.style.marginRight = margin;
+
+        scale.style.left = margin;
     }
 
     function audioSetup() {
@@ -98,6 +117,7 @@
         oscillatorNode = audioCtx.createOscillator();
         oscillatorNode.type = 'sawtooth';
         oscillatorNode.frequency.value = 440;
+        oscillatorNode.detune.value = -1200;
         oscillatorNode.start(0);
 
         gainNode = audioCtx.createGain();
@@ -119,6 +139,7 @@
 
         element.src = 'note.gif';
         element.className = 'note';
+        element.style.transform = 'rotate('+(Math.random()*30-15)+'deg)';
         outer.appendChild(element);
 
         notes.push(note);
@@ -146,7 +167,9 @@
 
     window.addEventListener('load', function () {
         outer = document.getElementById('outer');
-        setStarting();
+        expander = document.getElementById('expander');
+        scale = document.getElementById('scale');
+        setMargins();
 
         document.body.addEventListener('click', audioSetup);
 
@@ -159,4 +182,30 @@
     <img id="top" src="top.png" />
     <img id="expander" src="expander.png" />
     <img id="slide" src="slide.png" />
+</div>
+<div id="scale">
+    <span class="mark">A</span>
+    <span class="mark">G#</span>
+    <span class="mark">G</span>
+    <span class="mark">F#</span>
+    <span class="mark">F</span>
+    <span class="mark">E</span>
+    <span class="mark">D#</span>
+    <span class="mark">D</span>
+    <span class="mark">C#</span>
+    <span class="mark">C</span>
+    <span class="mark">B</span>
+    <span class="mark">A#</span>
+    <span class="mark">A</span>
+    <span class="mark">G#</span>
+    <span class="mark">G</span>
+    <span class="mark">F#</span>
+    <span class="mark">F</span>
+    <span class="mark">E</span>
+    <span class="mark">D#</span>
+    <span class="mark">D</span>
+    <span class="mark">C#</span>
+    <span class="mark">C</span>
+    <span class="mark">B</span>
+    <span class="mark">A#</span>
 </div>
