@@ -1,11 +1,12 @@
 <link href="https://fonts.googleapis.com/css?family=ABeeZee&display=swap" rel="stylesheet">
 <style>
     body {
-        background: url('bg.gif');
+        background: url('bg.gif') #d0f6cc;
         background-size: 100px;
         overflow: hidden;
         height: 100%;
         font-family: 'ABeeZee', sans-serif;
+        -webkit-font-smoothing: antialiased;
     }
     #outer {
         position: relative;
@@ -174,8 +175,8 @@
 
     function setup() { 
         window.moveTo(
-            opener.screenLeft + (opener.outerWidth/2) - (window.outerWidth/2),
-            opener.screenTop + (opener.outerHeight/2) - (window.outerHeight/2)
+            opener.screenLeft + 50,//(opener.outerWidth/2) - (window.outerWidth/2),
+            opener.screenTop + (opener.outerHeight/2) - (window.outerHeight/2) - 50
         );
 
         outer = document.getElementById('outer');

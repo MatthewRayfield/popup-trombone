@@ -1,20 +1,71 @@
-<button id="launch-button">launch</button>
+<link href="https://fonts.googleapis.com/css?family=Space+Mono&display=swap" rel="stylesheet">
+<style>
+    body {
+        background: url('bg2.png') #ffe671;
+        background-position: center;
+        color: #3a3a3a;
+        text-align: center;
+        font-family: 'Space Mono', monospace;
+        font-size: 16px;
+        margin: 0;
+        -webkit-font-smoothing: antialiased;
+    }
+    #title-box {
+        cursor: pointer;
+        display: inline-block;
+        background: #ffe671;
+        padding: 0rem 1rem;
+        margin-top: 5rem;
+    }
+    h1 {
+        margin: 1rem;
+    }
+    h4 {
+        margin: 1rem;
+    }
+    footer {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+    }
+    footer span {
+        display: inline-block;
+        background: #ffe671;
+        padding: .5rem;
+    }
+</style>
+<div id="title-box">
+    <h1>Popup Trombone</h1>
+    <img src="popup.gif" />
+    <h4>Click Above to Open<br />Then Resize Popup to Play</h4>
+</div>
+<footer>
+    <span>
+        another sorta good web thing by <a href="http://matthewrayfield.com">matthew rayfield world</a> in 2019
+    </span>
+</footer>
 <script>
+    var titleBox;
+
     function openPopup() {
         var popup,
-            x = window.screenLeft + (window.outerWidth/2) - (400/2),
-            y = window.screenTop + (window.outerHeight/2) - (250/2);
+            x = window.screenLeft + 50,//(window.outerWidth/2) - (400/2),
+            y = window.screenTop + (window.outerHeight/2) - (250/2) - 50;
 
-        popup = window.open('trombone.html?'+(Date.now()), 'trombone'+(Date.now()), 'width=400,height=250,left='+x+',top='+y);
+        popup = window.open('trombone.html', 'trombone'+(Date.now()), 'width=400,height=250,left='+x+',top='+y);
 
         popup.addEventListener('load', function () {
             popup.setup();
+            titleBox.style.display = 'none';
         });
     }
 
     window.addEventListener('load', function () {
-        var button = document.getElementById('launch-button');
+        titleBox = document.getElementById('title-box');
 
-        button.addEventListener('click', openPopup);
+        titleBox.addEventListener('click', openPopup);
+
+        window.addEventListener('focus', function () {titleBox.style.display = 'inline-block';});
     });
 </script>
